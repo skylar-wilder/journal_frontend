@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import API from "./api";
+import Home from "./Home";
+import MorningList from "./MorningList";
+
 
 function App() {
   const [username, setUsername] = useState("");
@@ -8,12 +11,12 @@ function App() {
   const [journals, setJournals] = useState([]);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
+  const [page, setPage] = useState("home");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       setLoggedIn(true);
-      fetchJournals();
     }
   }, []);
 
@@ -76,10 +79,37 @@ function App() {
       </div>
     );
   }
+  if (page === "home") {
+  return (
+    <Home
+      onSelect={(selected) => {
+        if (selected === "journal") {
+	  fetchJournals();
+          setPage("journals");
+        }
+	else if (selected === "morning"){ 
+		setPage("morning");
+        }
+	else {
+          alert("Coming soon 🌱");
+        }
+      }}
+    />
+  );
+  }
+ if (page === "morning") {
+  return <MorningList onBack={() => setPage("home")} />;
+}
+
+
 
   return (
     <div style={{ padding: 40 }}>
-      <button onClick={logout}>Logout</button>
+       <button onClick={() => setPage("home")}>← Home</button>
+       <button onClick={logout} style={{ marginLeft: 10 }}>
+          Logout
+      </button>
+      
 
       <h2>My Journals</h2>
 

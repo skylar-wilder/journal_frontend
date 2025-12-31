@@ -49,9 +49,9 @@ function Home({ onSelect, onLogout }) {
         />
 
         <FeatureCard
-          title="Special Entries"
-          description="Trips, memories, and meaningful days"
-          onClick={() => onSelect("special")}
+          title="Habit Tracker"
+          description="Keep consistent with good habits"
+          onClick={() => onSelect("habit")}
         />
 
         <FeatureCard

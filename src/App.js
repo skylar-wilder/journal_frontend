@@ -3,6 +3,8 @@ import API from "./api";
 import Home from "./Home";
 import MorningList from "./MorningList";
 import EndOfDayJournal from "./EndOfDayJournal";
+import PreviousJournals from "./PreviousJournals";
+
 
 function App() {
   const [username, setUsername] = useState("");
@@ -114,8 +116,23 @@ function App() {
   /* ---------------- END OF DAY JOURNAL ---------------- */
 
   if (page === "end-of-day") {
-    return <EndOfDayJournal onBack={() => setPage("home")} />;
-  }
+  return (
+    <EndOfDayJournal
+      onBack={(dest) => {
+        if (dest === "previous") setPage("previous-journals");
+        else setPage("home");
+      }}
+    />
+  );
+ }
+ 
+ /* ---------------- PREVIOUS JOURNAL ---------------- */
+
+if (page === "previous-journals") {
+  return <PreviousJournals onBack={() => setPage("end-of-day")} />;
+}
+
+
 
   /* ---------------- JOURNALS ---------------- */
 

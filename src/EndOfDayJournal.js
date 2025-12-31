@@ -49,6 +49,20 @@ function EndOfDayJournal({ onBack }) {
       {message && (
         <p style={{ marginTop: 10, color: "#B0B6C1" }}>{message}</p>
       )}
+	<button
+  onClick={() => onBack("previous")}
+  style={{
+    marginTop: "10px",
+    background: "none",
+    border: "none",
+    color: "#4DA3FF",
+    cursor: "pointer",
+    padding: 0,
+  }}
+>
+  View previous entries →
+</button>
+
 
       {/* Date */}
       <div style={{ marginTop: 20 }}>

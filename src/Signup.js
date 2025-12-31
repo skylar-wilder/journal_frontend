@@ -7,17 +7,29 @@ function Signup({ goToLogin }) {
   const [message, setMessage] = useState("");
 
   const handleSignup = async () => {
-    try {
-      await axios.post(
-        "https://journal-backend-e78v.onrender.com/api/signup/",
-        { username, password }
-      );
-      setMessage("Account created! You can log in now.");
-    } catch (err) {
-      console.error(err);
+  try {
+    await axios.post(
+      "https://journal-backend-e78v.onrender.com/api/signup/",
+      { username, password }
+    );
+    setMessage("Account created! You can log in now.");
+  } catch (err) {
+    if (err.response && err.response.data) {
+      const data = err.response.data;
+
+      if (data.username) {
+        setMessage(data.username[0]);
+      } else if (data.password) {
+        setMessage(data.password[0]);
+      } else {
+        setMessage("Signup failed");
+      }
+    } else {
       setMessage("Signup failed");
     }
-  };
+  }
+};
+
 
   return (
     <div style={container}>

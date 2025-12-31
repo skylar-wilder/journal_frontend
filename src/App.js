@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import API from "./api";
 import Home from "./Home";
 import MorningList from "./MorningList";
-
+import EndOfDayJournal from "./EndOfDayJournal";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -29,7 +29,7 @@ function App() {
       });
       localStorage.setItem("token", res.data.access);
       setLoggedIn(true);
-      fetchJournals();
+      setPage("home");
     } catch (err) {
       console.error(err);
       setError("Login failed");
@@ -39,6 +39,7 @@ function App() {
   const logout = () => {
     localStorage.removeItem("token");
     setLoggedIn(false);
+    setPage("home");
     setJournals([]);
   };
 
@@ -56,6 +57,8 @@ function App() {
     setJournals([res.data, ...journals]);
     setContent("");
   };
+
+  /* ---------------- LOGIN ---------------- */
 
   if (!loggedIn) {
     return (
@@ -79,43 +82,56 @@ function App() {
       </div>
     );
   }
+
+  /* ---------------- HOME ---------------- */
+
   if (page === "home") {
-  return (
-    <Home
-      onSelect={(selected) => {
-        if (selected === "journal") {
-	  fetchJournals();
-          setPage("journals");
-        }
-	else if (selected === "morning"){ 
-		setPage("morning");
-        }
-	else {
-          alert("Coming soon 🌱");
-        }
-      }}
-    />
-  );
+    return (
+      <Home
+        onSelect={(selected) => {
+          if (selected === "journal") {
+            fetchJournals();
+            setPage("journals");
+          } else if (selected === "morning") {
+            setPage("morning");
+          } else if (selected === "end-of-day") {
+            setPage("end-of-day");
+          } else {
+            alert("Coming soon 🌱");
+          }
+        }}
+        onLogout={logout}
+      />
+    );
   }
- if (page === "morning") {
-  return <MorningList onBack={() => setPage("home")} />;
-}
 
+  /* ---------------- MORNING LIST ---------------- */
 
+  if (page === "morning") {
+    return <MorningList onBack={() => setPage("home")} />;
+  }
+
+  /* ---------------- END OF DAY JOURNAL ---------------- */
+
+  if (page === "end-of-day") {
+    return <EndOfDayJournal onBack={() => setPage("home")} />;
+  }
+
+  /* ---------------- JOURNALS ---------------- */
 
   return (
     <div style={{ padding: 40 }}>
-       <button onClick={() => setPage("home")}>← Home</button>
-       <button onClick={logout} style={{ marginLeft: 10 }}>
-          Logout
+      <button onClick={() => setPage("home")}>← Home</button>
+      <button onClick={logout} style={{ marginLeft: 10 }}>
+        Logout
       </button>
-      
 
-      <h2>My Journals</h2>
+      <h2 style={{ marginTop: 20 }}>My Journals</h2>
 
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
+        style={{ width: "100%", height: "100px" }}
       />
       <br />
       <button onClick={createJournal}>Save</button>

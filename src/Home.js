@@ -1,4 +1,4 @@
-function Home({ onSelect }) {
+function Home({ onSelect, onLogout }) {
   return (
     <div
       style={{
@@ -9,12 +9,23 @@ function Home({ onSelect }) {
         boxSizing: "border-box",
       }}
     >
-      {/* Greeting */}
-      <div style={{ marginBottom: "40px" }}>
-        <h1 style={{ marginBottom: "10px" }}>Good evening 🌙</h1>
-        <p style={{ color: "#B0B6C1", fontSize: "16px" }}>
-          What would you like to focus on today?
-        </p>
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "40px",
+        }}
+      >
+        <div>
+          <h1 style={{ marginBottom: "10px" }}>Greetings 🌙</h1>
+          <p style={{ color: "#B0B6C1", fontSize: "16px" }}>
+            What would you like to focus on today?
+          </p>
+        </div>
+
+        <button onClick={onLogout}>Logout</button>
       </div>
 
       {/* Feature Grid */}
@@ -34,7 +45,7 @@ function Home({ onSelect }) {
         <FeatureCard
           title="End-of-Day Journal"
           description="Reflect, express gratitude, and unwind"
-          onClick={() => onSelect("journal")}
+          onClick={() => onSelect("end-of-day")}
         />
 
         <FeatureCard

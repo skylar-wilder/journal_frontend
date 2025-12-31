@@ -65,17 +65,7 @@ function Home({ onSelect, onLogout }) {
           description="Focus sessions with trophies"
           onClick={() => onSelect("timer")}
         />
-	<FeatureCard
-  title="Friends"
-  description="See friends and activity"
-  onClick={() => onSelect("friends")}
-/>
-
-<FeatureCard
-  title="Notifications"
-  description="Shared journals & updates"
-  onClick={() => onSelect("notifications")}
-/>
+	
 
       </div>
     </div>

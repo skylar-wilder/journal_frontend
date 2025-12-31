@@ -1,166 +1,123 @@
 import { useState, useEffect } from "react";
 import API from "./api";
+
 import Home from "./Home";
 import MorningList from "./MorningList";
 import EndOfDayJournal from "./EndOfDayJournal";
 import PreviousJournals from "./PreviousJournals";
+
 import Login from "./Login";
 import Signup from "./Signup";
 
-
+import FriendCenter from "./FriendCenter";
+import Notifications from "./Notifications";
+import TopBar from "./TopBar";
 
 function App() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
-  const [journals, setJournals] = useState([]);
-  const [content, setContent] = useState("");
-  const [error, setError] = useState("");
   const [page, setPage] = useState("home");
+
+  // overlay: null | "friends" | "notifications"
+  const [overlay, setOverlay] = useState(null);
+
+  const [authPage, setAuthPage] = useState("login");
+
+  /* ---------------- AUTH CHECK ---------------- */
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      setLoggedIn(true);
-    }
+    if (token) setLoggedIn(true);
   }, []);
-
-  const login = async () => {
-    try {
-      setError("");
-      const res = await API.post("token/", {
-        username,
-        password,
-      });
-      localStorage.setItem("token", res.data.access);
-      setLoggedIn(true);
-      setPage("home");
-    } catch (err) {
-      console.error(err);
-      setError("Login failed");
-    }
-  };
 
   const logout = () => {
     localStorage.removeItem("token");
     setLoggedIn(false);
     setPage("home");
-    setJournals([]);
+    setOverlay(null);
   };
 
-  const fetchJournals = async () => {
-    const res = await API.get("journals/");
-    setJournals(res.data);
-  };
+  /* ---------------- AUTH PAGES ---------------- */
 
-  const createJournal = async () => {
-    if (!content.trim()) return;
-    const res = await API.post("journals/", {
-      content,
-      is_shared: false,
-    });
-    setJournals([res.data, ...journals]);
-    setContent("");
-  };
+  if (!loggedIn) {
+    if (authPage === "login") {
+      return (
+        <Login
+          onLogin={() => {
+            setLoggedIn(true);
+            setPage("home");
+          }}
+          goToSignup={() => setAuthPage("signup")}
+        />
+      );
+    }
+    return <Signup goToLogin={() => setAuthPage("login")} />;
+  }
 
-  /* ---------------- LOGIN ---------------- */
+  /* ---------------- OVERLAYS ---------------- */
 
-  const [authPage, setAuthPage] = useState("login");
-
-if (!loggedIn) {
-  if (authPage === "login") {
+  if (overlay === "friends") {
     return (
-      <Login
-        onLogin={() => {
-          setLoggedIn(true);
-          setPage("home");
-        }}
-        goToSignup={() => setAuthPage("signup")}
-      />
+      <>
+        <TopBar
+          onFriends={() => setOverlay("friends")}
+          onNotifications={() => setOverlay("notifications")}
+          onLogout={logout}
+        />
+        <FriendCenter onBack={() => setOverlay(null)} />
+      </>
     );
   }
 
-  return <Signup goToLogin={() => setAuthPage("login")} />;
-}
-
-  /* ---------------- HOME ---------------- */
-
-  if (page === "home") {
+  if (overlay === "notifications") {
     return (
-      <Home
-        onSelect={(selected) => {
-          if (selected === "journal") {
-            fetchJournals();
-            setPage("journals");
-          } else if (selected === "morning") {
-            setPage("morning");
-          } else if (selected === "end-of-day") {
-            setPage("end-of-day");
-          } else {
-            alert("Coming soon 🌱");
-          }
-        }}
+      <>
+        <TopBar
+          onFriends={() => setOverlay("friends")}
+          onNotifications={() => setOverlay("notifications")}
+          onLogout={logout}
+        />
+        <Notifications onBack={() => setOverlay(null)} />
+      </>
+    );
+  }
+
+  /* ---------------- MAIN PAGES ---------------- */
+
+  return (
+    <>
+      <TopBar
+        onFriends={() => setOverlay("friends")}
+        onNotifications={() => setOverlay("notifications")}
         onLogout={logout}
       />
-    );
-  }
 
-  /* ---------------- MORNING LIST ---------------- */
+      {page === "home" && (
+        <Home
+          onSelect={(selected) => {
+            if (selected === "morning") setPage("morning");
+            else if (selected === "end-of-day") setPage("end-of-day");
+            else alert("Coming soon 🌱");
+          }}
+        />
+      )}
 
-  if (page === "morning") {
-    return <MorningList onBack={() => setPage("home")} />;
-  }
+      {page === "morning" && (
+        <MorningList onBack={() => setPage("home")} />
+      )}
 
-  /* ---------------- END OF DAY JOURNAL ---------------- */
+      {page === "end-of-day" && (
+        <EndOfDayJournal
+          onBack={(dest) => {
+            if (dest === "previous") setPage("previous-journals");
+            else setPage("home");
+          }}
+        />
+      )}
 
-  if (page === "end-of-day") {
-  return (
-    <EndOfDayJournal
-      onBack={(dest) => {
-        if (dest === "previous") setPage("previous-journals");
-        else setPage("home");
-      }}
-    />
-  );
- }
- 
- /* ---------------- PREVIOUS JOURNAL ---------------- */
-
-if (page === "previous-journals") {
-  return <PreviousJournals onBack={() => setPage("end-of-day")} />;
-}
-
-
-
-  /* ---------------- JOURNALS ---------------- */
-
-  return (
-    <div style={{ padding: 40 }}>
-      <button onClick={() => setPage("home")}>← Home</button>
-      <button onClick={logout} style={{ marginLeft: 10 }}>
-        Logout
-      </button>
-
-      <h2 style={{ marginTop: 20 }}>My Journals</h2>
-
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        style={{ width: "100%", height: "100px" }}
-      />
-      <br />
-      <button onClick={createJournal}>Save</button>
-
-      <hr />
-
-      {journals.map((j) => (
-        <div key={j.id}>
-          <p>{j.content}</p>
-          <small>{j.created_at}</small>
-          <hr />
-        </div>
-      ))}
-    </div>
+      {page === "previous-journals" && (
+        <PreviousJournals onBack={() => setPage("end-of-day")} />
+      )}
+    </>
   );
 }
 

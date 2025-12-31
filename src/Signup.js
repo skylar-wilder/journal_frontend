@@ -13,7 +13,8 @@ function Signup({ goToLogin }) {
         { username, password }
       );
       setMessage("Account created! You can log in now.");
-    } catch {
+    } catch (err) {
+      console.error(err);
       setMessage("Signup failed");
     }
   };
@@ -48,5 +49,48 @@ function Signup({ goToLogin }) {
     </div>
   );
 }
+
+/* ---------- styles ---------- */
+
+const container = {
+  minHeight: "100vh",
+  backgroundColor: "#0F1115",
+  color: "#FFFFFF",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: "40px",
+};
+
+const sub = {
+  color: "#B0B6C1",
+  marginBottom: "20px",
+};
+
+const input = {
+  width: "260px",
+  backgroundColor: "#161A22",
+  color: "#FFFFFF",
+  border: "none",
+  padding: "12px",
+  borderRadius: "8px",
+  marginBottom: "12px",
+};
+
+const button = {
+  backgroundColor: "#4DA3FF",
+  border: "none",
+  padding: "12px 18px",
+  borderRadius: "10px",
+  cursor: "pointer",
+  marginTop: "10px",
+};
+
+const link = {
+  marginTop: "20px",
+  color: "#4DA3FF",
+  cursor: "pointer",
+};
 
 export default Signup;

@@ -4,6 +4,9 @@ import Home from "./Home";
 import MorningList from "./MorningList";
 import EndOfDayJournal from "./EndOfDayJournal";
 import PreviousJournals from "./PreviousJournals";
+import Login from "./Login";
+import Signup from "./Signup";
+
 
 
 function App() {
@@ -62,28 +65,23 @@ function App() {
 
   /* ---------------- LOGIN ---------------- */
 
-  if (!loggedIn) {
+  const [authPage, setAuthPage] = useState("login");
+
+if (!loggedIn) {
+  if (authPage === "login") {
     return (
-      <div style={{ padding: 40 }}>
-        <h2>Login</h2>
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
-        <input
-          placeholder="Username"
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <br /><br />
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br /><br />
-        <button onClick={login}>Login</button>
-      </div>
+      <Login
+        onLogin={() => {
+          setLoggedIn(true);
+          setPage("home");
+        }}
+        goToSignup={() => setAuthPage("signup")}
+      />
     );
   }
+
+  return <Signup goToLogin={() => setAuthPage("login")} />;
+}
 
   /* ---------------- HOME ---------------- */
 

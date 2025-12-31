@@ -38,65 +38,99 @@ function EndOfDayJournal({ onBack }) {
   };
 
   return (
-    <div style={{ padding: 40 }}>
-      <button onClick={() => onBack("home")}>← Home</button>
+  <div
+    style={{
+      minHeight: "100vh",
+      backgroundColor: "#0F1115",
+      color: "#FFFFFF",
+      padding: "40px",
+      boxSizing: "border-box",
+    }}
+  >
+    <button onClick={() => onBack("home")}>← Home</button>
 
-      <h2>End of Day Journal 🌙</h2>
+    <h2 style={{ marginTop: 20 }}>End of Day Journal 🌙</h2>
 
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        style={{ marginBottom: 10 }}
-      />
+    <input
+      type="date"
+      value={date}
+      onChange={(e) => setDate(e.target.value)}
+      style={{
+        backgroundColor: "#161A22",
+        color: "#FFFFFF",
+        border: "none",
+        padding: "10px",
+        borderRadius: "8px",
+        marginBottom: "12px",
+      }}
+    />
 
-      <textarea
-        placeholder="Write about your day…"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        style={{ width: "100%", height: "160px" }}
-      />
+    <textarea
+      placeholder="Write about your day…"
+      value={content}
+      onChange={(e) => setContent(e.target.value)}
+      style={{
+        width: "100%",
+        height: "160px",
+        backgroundColor: "#161A22",
+        color: "#FFFFFF",
+        border: "none",
+        padding: "12px",
+        borderRadius: "10px",
+      }}
+    />
 
-      {/* SHARE TOGGLE */}
-      <div style={{ marginTop: 20 }}>
-        <label>
-          <input
-            type="checkbox"
-            checked={shareEnabled}
-            onChange={(e) => setShareEnabled(e.target.checked)}
-          />
-          Share this journal
-        </label>
-      </div>
-
-      {/* FRIEND LIST */}
-      {shareEnabled && (
-        <div style={{ marginTop: 10 }}>
-          {friends.map((f) => (
-            <div key={f.id}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={sharedWith.includes(f.id)}
-                  onChange={() => {
-                    setSharedWith((prev) =>
-                      prev.includes(f.id)
-                        ? prev.filter((x) => x !== f.id)
-                        : [...prev, f.id]
-                    );
-                  }}
-                />
-                @{f.username}
-              </label>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <br />
-      <button onClick={saveJournal}>Save</button>
+    <div style={{ marginTop: 20 }}>
+      <label>
+        <input
+          type="checkbox"
+          checked={shareEnabled}
+          onChange={(e) => setShareEnabled(e.target.checked)}
+        />{" "}
+        Share this journal
+      </label>
     </div>
-  );
-}
+
+    {shareEnabled && (
+      <div style={{ marginTop: 10 }}>
+        {friends.map((f) => (
+          <div key={f.id}>
+            <label>
+              <input
+                type="checkbox"
+                checked={sharedWith.includes(f.id)}
+                onChange={() => {
+                  setSharedWith((prev) =>
+                    prev.includes(f.id)
+                      ? prev.filter((x) => x !== f.id)
+                      : [...prev, f.id]
+                  );
+                }}
+              />{" "}
+              @{f.username}
+            </label>
+          </div>
+        ))}
+      </div>
+    )}
+
+    <br />
+    <button
+      onClick={saveJournal}
+      style={{
+        backgroundColor: "#1C2230",
+        color: "#FFFFFF",
+        border: "none",
+        padding: "10px 16px",
+        borderRadius: "10px",
+        cursor: "pointer",
+        marginTop: 16,
+      }}
+    >
+      Save
+    </button>
+  </div>
+);
+
 
 export default EndOfDayJournal;
